@@ -2,12 +2,13 @@ import requests
 import sqlite3
 import tweepy
 import openai
-
-# Initialize Twitter API credentials (create a Twitter Developer account to get your keys)
-twitter_consumer_key = 'your_consumer_key'
-twitter_consumer_secret = 'your_consumer_secret'
-twitter_access_token = 'your_access_token'
-twitter_access_secret = 'your_access_secret'
+from config import (
+    twitter_consumer_key,
+    twitter_consumer_secret,
+    twitter_access_token,
+    twitter_access_secret,
+    openai_api_key,
+)
 
 # Set up Twitter API
 auth = tweepy.OAuthHandler(twitter_consumer_key, twitter_consumer_secret)
@@ -15,7 +16,7 @@ auth.set_access_token(twitter_access_token, twitter_access_secret)
 twitter_api = tweepy.API(auth)
 
 # Set up OpenAI API key
-openai.api_key = 'your_openai_api_key'
+openai.api_key = openai_api_key
 
 # Function to scrape crypto data from a website (replace URL with the actual crypto data source)
 def scrape_crypto_data():
@@ -27,8 +28,8 @@ def scrape_crypto_data():
 
 # Function to fetch crypto data from Twitter
 def fetch_twitter_data(symbol='BTC', count=100):
-    tweets = twitter_api.search(q=f'#{symbol}', count=count)
-    return [tweet.text for tweet in tweets]
+    tweets = twitter_api.search(q=f'#{symbol}', count=count, tweet_mode='extended')
+    return [tweet.full_text for tweet in tweets]
 
 # Function to create SQLite database and store crypto data
 def create_database(data):
